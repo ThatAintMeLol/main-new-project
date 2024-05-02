@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Bros Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+            let player = {
+        x: (canvas.width / 2) - 25,
+        y: (canvas.height / 2) - 25,
+        width: 50,
+        height: 50,
+        speed: 5,
+        dx: 0,
+        dy: 0,
+        gravity: 0.5
+    };
+
+    let ground = {
+        x: 0,
+        y: 550,
+        width: canvas.width,
+        height: 50
+    };
+
+    function drawPlayer() {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawGround() {
+        ctx.fillStyle = 'green';
+        ctx.fillRect(ground.x, ground.y, ground.width, ground.height);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    function update() {
+        clearCanvas();
+
+        drawGround();
+        drawPlayer();
+
+        // Apply gravity to the player
+        player.dy += player.gravity;
+
+        // Update player position
+        player.x += player.dx;
+        player.y += player.dy;
+
+        // Keep player within game boundaries
+        if (player.x < 0) {
+            player.x = 0;
+        }
+        if (player.x + player.width > canvas.width) {
+            player.x = canvas.width - player.width;
+        }
+        if (player.y < 0) {
+            player.y = 0;
+        }
+        if (player.y + player.height > ground.y) {
+            player.y = ground.y - player.height;
+        }
+
+        requestAnimationFrame(update);
+    }
+
+
+    function movePlayerStart(e) {
+        if (e.key === 'ArrowUp') {
+            player.dy = -player.speed;
+        } else if (e.key === 'ArrowDown') {
+            player.dy = player.speed;
+        } else if (e.key === 'ArrowLeft') {
+            player.dx = -player.speed;
+        } else if (e.key === 'ArrowRight') {
+            player.dx = player.speed;
+        }
+    }
+
+    function movePlayerStop(e) {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            player.dy = 0;
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            player.dx = 0;
+        }
+    }
+
+    document.addEventListener('keydown', movePlayerStart);
+    document.addEventListener('keyup', movePlayerStop);
+
+    update();
+</script>
+
+</body>
+
+</html>
